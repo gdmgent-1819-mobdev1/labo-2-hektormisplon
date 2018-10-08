@@ -1,8 +1,19 @@
-function displayUser(e) {
-    let i = 0;
-    let transaction = userDb.transaction(['randomUserStore'], 'readonly');
-    let index = store.index(i);
-    i += 1;
+function displayUser() {
+    //let i = 0;
+    let transaction = userDb.transaction(['randomUserStore'], 'readwrite');
+    let userStore = transaction.objectStore('randomUserStore');
+    let keyRange = IDBKeyRange.lowerBound(0);
+    let cursorRequest = userStore.openCursor(keyRange);
+    let randomUsers = [];
+    cursorRequest.onsuccess = function(e) {
+        randomUser = e.target.result;
+        for(let i = 0; i < 10; i ++) {
+            if(randomUser == false) {
+                return;
+            }
+            randomUsers.push(randomUser.value);
+        }
+    };
 }
 
 function evaluateUser(e) {
@@ -40,7 +51,6 @@ window.onload = function() {
         console.log('Opened database')
         userDb = e.target.result;
         displayUser();
-        evaluateUser();
     }
     request.onerror = function(e) {
         console.log('Could not open database' + e.target.errorCode);
@@ -71,7 +81,7 @@ fetch(url)
         }
         let request = store.add(randomUser);
         request.onsuccess = function(e) {
-            console.log(randomUser.uName + ' added to the user database');
+        console.log(randomUser.uName + ' added to the user database');
         }
         request.onerror = function(e) {
             console.log('Error: ' + e.target.user.uName + ' NOT added to user database');
