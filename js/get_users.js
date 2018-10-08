@@ -1,5 +1,4 @@
 function displayUser() {
-    //let i = 0;
     let transaction = userDb.transaction(['randomUserStore'], 'readwrite');
     let userStore = transaction.objectStore('randomUserStore');
     let keyRange = IDBKeyRange.lowerBound(0);
@@ -16,22 +15,15 @@ function displayUser() {
     };
 }
 
-function evaluateUser(e) {
-    /*
-    let transaction = userDb.transaction(['randomUserStore'], 'readwrite');
-    let store = transaction.objectStore('randomUserStore');
-    uLiked = true;
-    let request = store.put(uLiked);
-    return transaction.complete;
-    /*set uLiked to true or false
-    if(//mouse event of ) {
-        set true
+function evaluateUser(like) {
+    let uLiked;
+    if(like) {
+        uLiked = true;
     } else {
-        set false
+        uLiked = false;
     }
-    display the next user
-    return boolean
-    */
+    console.log("You like this user: " + uLiked);
+    return uLiked;
 }
 
 
