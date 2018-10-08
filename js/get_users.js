@@ -1,9 +1,11 @@
 function displayUser() {
+    console.log('displaying user');
     let transaction = userDb.transaction(['randomUserStore'], 'readwrite');
     let userStore = transaction.objectStore('randomUserStore');
     let keyRange = IDBKeyRange.lowerBound(0);
     let cursorRequest = userStore.openCursor(keyRange);
-    let randomUsers = [];
+    let users = [];
+    /*
     cursorRequest.onsuccess = function(e) {
         randomUser = e.target.result;
         for(let i = 0; i < 10; i ++) {
@@ -13,6 +15,16 @@ function displayUser() {
             randomUsers.push(randomUser.value);
         }
     };
+    */
+   cursorRequest.onsuccess = users.map(function(user) {
+       user = e.target.result;
+       console.log('got '+user);
+       return user;
+   })
+   cursorRequest.onerror = function(e) {
+       console.log('Error: ' + e.target.result);
+   }
+   console.log(users);
 }
 
 function evaluateUser(like) {
@@ -22,10 +34,8 @@ function evaluateUser(like) {
     } else {
         uLiked = false;
     }
-    console.log("You like this user: " + uLiked);
     return uLiked;
 }
-
 
 const url = 'https://randomuser.me/api/?results=10';
 const elUsers = document.getElementById('random-users');
@@ -36,14 +46,14 @@ window.onload = function() {
     request.onupgradeneeded = function(e) {
         let userDb = e.target.result;
         let userStore = userDb.createObjectStore('randomUserStore', {keyPath: 'uID', autoIncrement: true});
-        userStore.createIndex('uID', 'uName', {unique: false});
-        userStore.createIndex('uLiked', 'uLiked', {unique: false});
+        userStore.createIndex('uName', 'uName', {unique: false});
+        //createIndex
     }
     request.onsuccess = function(e) {
         console.log('Opened database')
         userDb = e.target.result;
         displayUser();
-    }
+        }
     request.onerror = function(e) {
         console.log('Could not open database' + e.target.errorCode);
     }
@@ -54,15 +64,12 @@ fetch(url)
     return response.json();
 })
 .catch(function(error) {
-    console.error("Random users could not be fetched.");
+    console.error(error + "Random users could not be fetched.");
 })
 .then(function(data) {       
     let randomUsers = data.results;
-    //console.log(randomUsers);
     //indexed DB: store user obect to database
-    return randomUsers.map(function(randomUser) {
-        let transaction = userDb.transaction(['randomUserStore'], 'readwrite');
-        let store = transaction.objectStore('randomUserStore');
+    randomUsers.map(function(randomUser) {
         randomUser = {
             uName: randomUser.name.first,
             uAge: randomUser.dob.age,
@@ -71,12 +78,14 @@ fetch(url)
             uLocation: randomUser.location.city,
             uLiked: false
         }
+        let transaction = userDb.transaction(['randomUserStore'], 'readwrite');
+        let store = transaction.objectStore('randomUserStore');
         let request = store.add(randomUser);
         request.onsuccess = function(e) {
         console.log(randomUser.uName + ' added to the user database');
         }
         request.onerror = function(e) {
-            console.log('Error: ' + e.target.user.uName + ' NOT added to user database');
+        console.log('Error: ' + e.target.user.uName + ' NOT added to user database');
         }
     })
 });

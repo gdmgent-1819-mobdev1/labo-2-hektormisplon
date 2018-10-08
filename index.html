@@ -5,16 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <title></title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="icon" type="image/png" href="img/tinder.ico">
+    <title>Tindr</title>
 </head>
 <body>
-    <h1>Tindr</h1>
+<div class="container">
+    <header>
+        <h3>Tindr</h3>
+    </header>
     <div id="random-users">
+        <img src="">
+        <h5>Name </h5>
+        <h6>Age </h6>
+        <h6>Gender </h6>
+        <h6>Location </h6>
     </div>
-    <button onclick = "evaluateUser(true)" class="like"><span>Y</button>
-    <button onclick = "evaluateUser(false)" class="dislike">N</button>
-
+    <div class="buttons">
+        <button onclick = "evaluateUser(false)" class="dislike">nope</button>
+        <button class= "button-primary" onclick = "evaluateUser(true)" class="like">Like</button>
+    </div>
+</div>
 <script src="js/get_users.js"></script>
 </body>
 </html>
